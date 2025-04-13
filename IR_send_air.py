@@ -25,11 +25,12 @@ def carrier(gpio, frequency, micros):
 pi = pigpio.pi()
 
 # FILE = "IR_data_air.json"
-FILE = "IR_data_reibo_on_260.json"
+# FILE = "IR_data_reibo_on_260.json"
+FILE = "IR_data_air_test.json"
 GPIO = 26
 FREQ = 38.0 # [kHz], sub-carrier
-# GAP_S = 35/1000 # [s], gap between each wave (35ms)
-GAP_S = 0.0
+GAP_S = 25/1000 # [s], gap between each wave (35ms)
+# GAP_S = 0.0
 
 if not pi.connected:
     exit(0)
@@ -50,7 +51,8 @@ pi.wave_add_new()
 
 emit_time = time.time()
 
-signals =[ input("input signal name: ") ]
+# signals =[ "danbo_on_220_1", "danbo_on_220_2" ]
+signals =[ "reibo_on_260_1", "reibo_on_260_2" ]
 
 for arg in signals:
     if arg in records:
@@ -88,7 +90,7 @@ for arg in signals:
         pi.wave_chain(wave)
 
         while pi.wave_tx_busy():
-            time.sleep(0.002)
+            time.sleep(0.001)
         
         emit_time = time.time() + GAP_S
 
