@@ -1,0 +1,20 @@
+[Unit]
+Description=slackBot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ayusan
+WorkingDirectory=/home/ayusan/IR_air
+ExecStartPre=/bin/sleep 20
+ExecStart=/usr/bin/python3 -m app
+EnvironmentFile=/home/ayusan/IR_air/.env
+TimeoutStopSec=5
+StandardOutput=journal
+StandardError=journal
+Restart=on-Failure
+
+[Install]
+WantedBy=multi-user.target
+

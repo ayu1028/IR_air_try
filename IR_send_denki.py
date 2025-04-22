@@ -2,6 +2,16 @@ import time
 import json
 import os
 import pigpio
+import argparse
+import subprocess
+
+p = argparse.ArgumentParser()
+
+p.add_argument("-c", "--command", help="command name", required=True, type=str)
+
+args = p.parse_args()
+
+signals = [ args.command ]
 
 def carrier(gpio, frequency, micros):
     """
@@ -25,13 +35,18 @@ def carrier(gpio, frequency, micros):
 pi = pigpio.pi()
 
 # FILE = "IR_data_denki.json"
-FILE = "IR_data_air_test.json"
+# FILE = "IR_data_air_test.json"
+FILE = "IR_data_module_test.json"
+
 GPIO = 26
 FREQ = 38.0 # [kHz], sub-carrier
 GAP_S = 0.1 # [s], gap between each wave
 
 if not pi.connected:
-    exit(0)
+    # exit(0)
+    subprocess.Popen(['sudo', 'systemctl', 'start', 'pigpiod'])
+    time.sleep(10)
+    pi = pigpio.pi()
 
 try:
     f = open(FILE, "r")
@@ -49,7 +64,7 @@ pi.wave_add_new()
 
 emit_time = time.time()
 
-signals = [input("input signal name: ")]
+# signals = [input("input signal name: ")]
 
 for arg in signals:
     if arg in records:
