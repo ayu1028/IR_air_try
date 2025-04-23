@@ -1,0 +1,15 @@
+[Unit]
+Description=Run AHT21B_LCD.py at startup
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/ayusan/IR_air/AHT21B_LCD.py
+WorkingDirectory=/home/ayusan/IR_air
+StandardOutput=journal
+StandardError=journal
+Restart=on-failure
+User=ayusan
+
+[Install]
+WantedBy=multi-user.target
+
