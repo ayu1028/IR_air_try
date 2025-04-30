@@ -1,5 +1,5 @@
 .env
 test_ctl.py
 test_subprocess.py
-__pycache__
-
+__pycache__/
+.myenv

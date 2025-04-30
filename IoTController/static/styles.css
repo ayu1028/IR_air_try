@@ -1,0 +1,101 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f1f1f1;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    background-color: #f1f1f1;
+}
+
+.tab-button:hover {
+    background-color: #ddd;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+
+.tab-content.active {
+    display: flex;
+}
+
+.kaiteki-and-teishi-ctl, .temp-ctl, .hum-ctl {
+    display: flex;
+    flex-direction: column; /* 縦一列に並べる */
+    align-items: center; /* 中央寄せ */
+    width: 100%;
+}
+
+.sep-rl {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#tab1, #tab2, #tab3, #tab3 {
+    flex-direction: column; /* 縦一列に並べる */
+    align-items: center; /* 中央寄せ */
+}
+
+#tab1 button, #tab2 button, #tab3 .kaiteki-and-teishi-ctl button {
+    width: 200px; /* ボタンの幅を同じにする */
+    padding: 15px 20px; /* パディング */
+    margin: 10px; /* マージン */
+    border: solid;
+    border-width: 5px;
+    border-radius: 5px;
+    border-color: rgba(0, 0, 0, 0);
+    cursor: pointer; /* カーソルをポインターにする */
+    font-size: 16px; /* フォントサイズ */
+    transition: background-color 0.3s ease; /* 背景色の変化にトランジションを追加 */
+}
+
+.sep-rl button {
+    width: 120px; /* ボタンの幅を同じにする */
+    padding: 15px 20px; /* パディング */
+    margin: 10px; /* マージン */
+    border: solid;
+    border-width: 5px;
+    border-radius: 5px;
+    border-color: rgba(0, 0, 0, 0);
+    cursor: pointer; /* カーソルをポインターにする */
+    font-size: 16px; /* フォントサイズ */
+    transition: background-color 0.3s ease; /* 背景色の変化にトランジションを追加 */
+}
+
+#tab1 button.denki-on, #tab2 button.denki-on {
+    background-color: #4CAF50; /* 緑色の背景 */
+    color: white; /* 白色の文字 */
+}
+
+#tab1 button.denki-off, #tab2 button.denki-off {
+    background-color: #8d8d8d; /* 緑色の背景 */
+    color: white; /* 白色の文字 */
+}
+
+#tab1 button.denki-mini, #tab2 button.denki-mini {
+    background-color: #ff9100; /* 緑色の背景 */
+    color: white; /* 白色の文字 */
+}
+
+#tab1 button:active, #tab2 button:active {
+    width: 180px;
+    opacity: 0.7;
+    transition: 0.1s;
+}
