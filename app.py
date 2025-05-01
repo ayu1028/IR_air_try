@@ -42,6 +42,13 @@ headers = {"Content-Type": "application/json", "Authorization": "Bearer " + line
 # ボットトークンとソケットモードハンドラーを使ってアプリを初期化します
 app = App(token=os.environ.get("SLACK_BOT_TOKEN"))
 
+def check_temp_and_hum_data():
+    json_filename = "temp_and_hum_data.json"
+    with open(json_filename, "r") as f:
+        data = json.load(f)
+
+    return data['temp'], data['hum']
+
 @app.message()
 def action(message, say):
     global denki_ch1_switch
@@ -55,22 +62,22 @@ def action(message, say):
     commandMsg = textDict['message']['text']
     replyToken = textDict['replyToken']
 
-    if commandMsg == "denki_ch1" and denki_ch1_switch == 0:
+    if commandMsg == "denki_ch1_on":
         pro = subprocess.Popen(argsDenkiOnCh1)
         denki_ch1_switch = 1
         state = "on"
 
-    elif commandMsg == "denki_ch1" and denki_ch1_switch == 1:
+    elif commandMsg == "denki_ch1_off":
         pro = subprocess.Popen(argsDenkiOffCh1)
         denki_ch1_switch = 0
         state = "off"
 
-    elif commandMsg == "denki_ch2" and denki_ch2_switch == 0:
+    elif commandMsg == "denki_ch2_on":
         pro = subprocess.Popen(argsDenkiOnCh2)
         denki_ch2_switch = 1
         state = "on"
 
-    elif commandMsg == "denki_ch2" and denki_ch2_switch == 1:
+    elif commandMsg == "denki_ch2_off":
         pro = subprocess.Popen(argsDenkiOffCh2)
         denki_ch2_switch = 0
         state = "off"
@@ -78,13 +85,18 @@ def action(message, say):
     elif commandMsg == "poweroff":
         pro = subprocess.Popen(argsShutdown)
         state = "shutdown"
-        
+
+    elif commandMsg == "temp_and_hum_check":
+        temp, hum = check_temp_and_hum_data()
 
     else:
         state = "none"
         pass
         
-    msgText = f"{commandMsg} {state} command send"
+    msgText = f"send {commandMsg} command"
+    if commandMsg == "temp_and_hum_check":
+        msgText = f"temp:{temp} degC \n hum:{hum} %"
+
     contents = {"replyToken": replyToken, "messages" :[{"type": "text", "text" : msgText}]}
 
     res = requests.post(url, headers=headers, json=contents).json()
