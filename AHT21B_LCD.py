@@ -1,6 +1,9 @@
 from smbus2 import SMBus, i2c_msg
 from time import sleep
 import sys
+import json
+import os
+from datetime import datetime
 
 bus = SMBus(1)
 
@@ -112,6 +115,29 @@ def write_string(s):
 def new_line():
     bus.write_byte_data(address_st7032, register_setting, 0xc0)
 
+# make json file for output measurement data
+def update_temp_and_hum_data(temp, hum, filename="temp_and_hum_data.json"):
+    data = {}
+    if os.path.exists(filename):
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except json.JSONDecodeError:
+            data = {}
+
+    # update temp and hum data. If there is no data, add new data.
+    data['temp'] = round(temp, 1)
+    data['hum'] = int(hum)
+    
+    # add updated at
+    data['updated_at'] = datetime.now().strftime('%H:%M:%S')
+
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+    except IOError:
+        pass
+
 
 # Main proccess
 def main():
@@ -146,7 +172,7 @@ def main():
             new_line()
             write_string(hum_char)
 
-            # print(f"RH: {int(hum)} %, T: {round(temp, 1)} degC")
+            update_temp_and_hum_data(temp, hum)
 
             sleep(2)
 
