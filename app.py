@@ -17,9 +17,6 @@ load_dotenv(verbose=True)
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
-# GPIO 25ピンにLEDを設定
-# led = LED(25)
-
 IR_send_denki_path = join(dirname(__file__), 'IR_send_denki.py')
 
 # infrared command for denki
