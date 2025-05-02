@@ -18,6 +18,7 @@ dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 IR_send_denki_path = join(dirname(__file__), 'IR_send_denki.py')
+IR_send_air_path = join(dirname(__file__), 'IR_send_air.py')
 
 # infrared command for denki
 argsDenkiOnCh1 = ['python3', IR_send_denki_path, '-c', 'denki_on_ch1']
@@ -25,8 +26,12 @@ argsDenkiOnCh2 = ['python3', IR_send_denki_path, '-c', 'denki_on_ch2']
 argsDenkiOffCh1 = ['python3', IR_send_denki_path, '-c', 'denki_off_ch1']
 argsDenkiOffCh2 = ['python3', IR_send_denki_path, '-c', 'denki_off_ch2']
 
+# infrared command for air
+argsAirOn = ['python3', IR_send_air_path, '-c', 'reibo_on_260']
+
 denki_ch1_switch = 0
 denki_ch2_switch = 0
+air_switch = 0
 
 # raspberrypi shutdown command
 argsShutdown = ['sudo', 'poweroff']
@@ -50,6 +55,7 @@ def check_temp_and_hum_data():
 def action(message, say):
     global denki_ch1_switch
     global denki_ch2_switch
+    global air_switch
     state = ""
 
     textDict = json.loads(message['text'])
@@ -85,6 +91,11 @@ def action(message, say):
 
     elif commandMsg == "temp_and_hum_check":
         temp, hum = check_temp_and_hum_data()
+
+    elif commandMsg == "reibo_on_260":
+        pro = subprocess.Popen(argsAirOn)
+        air_switch = 1
+        state = "air on"
 
     else:
         state = "none"

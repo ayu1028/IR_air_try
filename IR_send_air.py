@@ -2,6 +2,11 @@ import time
 import json
 import os
 import pigpio
+import argparse
+
+p = argparse.ArgumentParser()
+p.add_argument("-c", "--command", help="command name", required=True, type=str)
+args = p.parse_args()
 
 def carrier(gpio, frequency, micros):
     """
@@ -25,8 +30,8 @@ def carrier(gpio, frequency, micros):
 pi = pigpio.pi()
 
 # FILE = "IR_data_air.json"
-# FILE = "IR_data_reibo_on_260.json"
-FILE = "IR_data_air_test.json"
+FILE = f"IR_data_{args.command}.json"
+# FILE = "IR_data_air_test.json"
 GPIO = 26
 FREQ = 38.0 # [kHz], sub-carrier
 GAP_S = 25/1000 # [s], gap between each wave (35ms)
@@ -52,7 +57,7 @@ pi.wave_add_new()
 emit_time = time.time()
 
 # signals =[ "danbo_on_220_1", "danbo_on_220_2" ]
-signals =[ "reibo_on_260_1", "reibo_on_260_2" ]
+signals =[ f"{args.command}_frame1", f"{args.command}_frame2" ]
 
 for arg in signals:
     if arg in records:
