@@ -4,4 +4,6 @@ test_subprocess.py
 __pycache__/
 .myenv
 temp_and_hum_data.json
+cloudinary_test.py
+images/
 

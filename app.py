@@ -10,12 +10,15 @@ from dotenv import load_dotenv
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
-# from gpiozero import LED
-
 load_dotenv(verbose=True)
-
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
+
+# setup for cloudinary uploader
+import cloudinary
+from cloudinary import CloudinaryImage
+import cloudinary.uploader
+import cloudinary.api
 
 IR_send_denki_path = join(dirname(__file__), 'IR_send_denki.py')
 IR_send_air_path = join(dirname(__file__), 'IR_send_air.py')
@@ -50,6 +53,20 @@ def check_temp_and_hum_data():
         data = json.load(f)
 
     return data['temp'], data['hum']
+
+def one_shot():
+   command_text = "libcamera-jpeg --output /home/ayusan/IR_air/images/test2.jpeg -n --width 1200 --height 800"
+   command_list = command_text.split(" ")
+   pro = subprocess.Popen(command_list)
+
+   while pro.poll() is None:
+       sleep(1)
+
+def upload_image():
+    upload = cloudinary.uploader.upload("/home/ayusan/IR_air/images/test2.jpeg", public_id="room_picture", unique_filename=False, overwrite=True, invalidate=True)
+    secure_url = upload["secure_url"]
+    
+    return secure_url
 
 @app.message()
 def action(message, say):
@@ -96,16 +113,24 @@ def action(message, say):
         pro = subprocess.Popen(argsAirOn)
         air_switch = 1
         state = "air on"
+    
+    elif commandMsg == "check_room":
+        one_shot()
+        secure_url = upload_image()
 
     else:
         state = "none"
         pass
         
-    msgText = f"send {commandMsg} command"
     if commandMsg == "temp_and_hum_check":
         msgText = f"temp:{temp} degC \n hum:{hum} %"
-
-    contents = {"replyToken": replyToken, "messages" :[{"type": "text", "text" : msgText}]}
+    else:
+        msgText = f"send {commandMsg} command"
+    
+    if commandMsg == "check_room":
+        contents = {"replyToken": replyToken, "messages" :[{"type": "text", "text" : msgText}, {"type": "image", "originalContentUrl": secure_url, "previewImageUrl": secure_url}]}
+    else:
+        contents = {"replyToken": replyToken, "messages" :[{"type": "text", "text" : msgText}]}
 
     res = requests.post(url, headers=headers, json=contents).json()
 
